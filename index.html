@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>Mat Space | 일간 확인</title>
+
+<style>
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+}
+
+body{
+  background:#f3f3f3;
+  min-height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  padding:20px;
+}
+
+.phone{
+  width:320px;
+  height:640px;
+  background:white;
+  border:1px solid #222;
+  display:flex;
+  flex-direction:column;
+  padding:30px;
+}
+
+.logo{
+  text-align:center;
+  font-size:34px;
+  margin-top:10px;
+  margin-bottom:40px;
+  flex-shrink:0;
+}
+
+.content{
+  flex:1;
+  display:flex;
+  flex-direction:column;
+}
+
+.form-group{
+  margin-bottom:28px;
+}
+
+label{
+  font-size:12px;
+  color:#555;
+}
+
+input{
+  width:100%;
+  border:none;
+  border-bottom:1px solid #ddd;
+  background:#f2f2f2;
+  padding:10px;
+  margin-top:6px;
+  font-size:14px;
+}
+
+.helper{
+  font-size:11px;
+  color:#aaa;
+  margin-top:6px;
+}
+
+button{
+  width:100%;
+  height:44px;
+  background:black;
+  color:white;
+  border:none;
+  margin-top:20px;
+  cursor:pointer;
+  font-size:14px;
+}
+
+.result{
+  display:none;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  text-align:center;
+  flex:1;
+}
+
+.result h2{
+  font-size:28px;
+  margin-bottom:10px;
+  font-weight:500;
+}
+
+.result h1{
+  font-size:36px;
+  margin-bottom:30px;
+  font-weight:500;
+}
+
+.reset{
+  margin-top:40px;
+}
+
+.note{
+  color:#777;
+  font-size:14px;
+  margin-top:10px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="phone">
+  <div class="logo">Mat Space</div>
+
+  <div class="content">
+    <div id="inputScreen">
+      <div class="form-group">
+        <label>년</label>
+        <input id="year" placeholder="2026" maxlength="4">
+      </div>
+
+      <div class="form-group">
+        <label>월</label>
+        <input id="month" placeholder="1" maxlength="2">
+      </div>
+
+      <div class="form-group">
+        <label>일</label>
+        <input id="day" placeholder="1" maxlength="2">
+      </div>
+
+      <button onclick="calculate()">일간 확인하기</button>
+    </div>
+
+    <div class="result" id="resultScreen">
+      <h2><span id="ilganWithElement"></span> 일간</h2>
+      <h1 id="ilju"></h1>
+      <div class="note">궁합표에서 확인해 보세요</div>
+      <button class="reset" onclick="resetForm()">다시 입력하기</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const STEMS = ["갑","을","병","정","무","기","경","신","임","계"];
+const BRANCHES = ["자","축","인","묘","진","사","오","미","신","유","술","해"];
+
+const STEM_WITH_ELEMENT = {
+  "갑": "갑목",
+  "을": "을목",
+  "병": "병화",
+  "정": "정화",
+  "무": "무토",
+  "기": "기토",
+  "경": "경금",
+  "신": "신금",
+  "임": "임수",
+  "계": "계수"
+};
+
+function gregorianToJdn(y,m,d){
+  let a=Math.floor((14-m)/12);
+  let y2=y+4800-a;
+  let m2=m+12*a-3;
+
+  return d
+    +Math.floor((153*m2+2)/5)
+    +365*y2
+    +Math.floor(y2/4)
+    -Math.floor(y2/100)
+    +Math.floor(y2/400)
+    -32045;
+}
+
+function mod(n,m){
+  return ((n%m)+m)%m;
+}
+
+function calculate(){
+  let y=document.getElementById("year").value.trim();
+  let m=document.getElementById("month").value.trim();
+  let d=document.getElementById("day").value.trim();
+
+  if(!y || !m || !d){
+    alert("생년월일을 입력해주세요");
+    return;
+  }
+
+  let year=parseInt(y,10);
+  let month=parseInt(m,10);
+  let day=parseInt(d,10);
+
+  let date=new Date(year,month-1,day);
+
+  if(
+    date.getFullYear() !== year ||
+    date.getMonth() !== month-1 ||
+    date.getDate() !== day
+  ){
+    alert("올바른 날짜를 입력해주세요");
+    return;
+  }
+
+  let jdn=gregorianToJdn(year,month,day);
+
+  let stemIndex=1+mod(jdn-1,10);
+  let branchIndex=1+mod(jdn+1,12);
+
+  let ilgan=STEMS[stemIndex-1];
+  let ilji=BRANCHES[branchIndex-1];
+  let ilju=ilgan+ilji;
+  let ilganWithElement = STEM_WITH_ELEMENT[ilgan];
+
+  document.getElementById("ilganWithElement").innerText = ilganWithElement;
+  document.getElementById("ilju").innerText = ilju + " 일주 입니다";
+
+  document.getElementById("inputScreen").style.display="none";
+  document.getElementById("resultScreen").style.display="flex";
+}
+
+function resetForm(){
+  document.getElementById("inputScreen").style.display="block";
+  document.getElementById("resultScreen").style.display="none";
+
+  document.getElementById("year").value="";
+  document.getElementById("month").value="";
+  document.getElementById("day").value="";
+}
+</script>
+
+</body>
+</html>
