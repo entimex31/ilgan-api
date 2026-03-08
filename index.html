@@ -139,17 +139,17 @@ button{
     <div id="inputScreen">
       <div class="form-group">
         <label>년</label>
-        <input id="year" placeholder="2026" maxlength="4">
+        <input id="year" placeholder="2026" inputmode="numeric" pattern="[0-9]*" maxlength="4">
       </div>
 
       <div class="form-group">
         <label>월</label>
-        <input id="month" placeholder="1" maxlength="2">
+        <input id="month" placeholder="1" inputmode="numeric" pattern="[0-9]*" maxlength="2">
       </div>
 
       <div class="form-group">
         <label>일</label>
-        <input id="day" placeholder="1" maxlength="2">
+        <input id="day" placeholder="1" inputmode="numeric" pattern="[0-9]*" maxlength="2">
       </div>
 
       <button onclick="calculate()">일간 확인하기</button>
@@ -219,6 +219,12 @@ function calculate(){
   let y=document.getElementById("year").value.trim();
   let m=document.getElementById("month").value.trim();
   let d=document.getElementById("day").value.trim();
+
+  // 년도 4자리 검사
+  if(!/^\d{4}$/.test(y)){
+  alert("올바른 날짜를 입력해 주세요");
+  return;
+  }
 
   if(!y || !m || !d){
     alert("생년월일을 입력해주세요");
