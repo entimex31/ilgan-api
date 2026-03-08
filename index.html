@@ -148,9 +148,9 @@ button{
     </div>
 
     <div class="result" id="resultScreen">
-      <h2><span id="ilganWithElement"></span> 일간</h2>
       <h1 id="ilju"></h1>
-      <div class="note">궁합표에서 확인해 보세요</div>
+      <h2 id="ilganText"></h2>
+      <div class="note" id="iljiInfo"></div>  
       <button class="reset" onclick="resetForm()">다시 입력하기</button>
     </div>
   </div>
@@ -159,6 +159,20 @@ button{
 <script>
 const STEMS = ["갑","을","병","정","무","기","경","신","임","계"];
 const BRANCHES = ["자","축","인","묘","진","사","오","미","신","유","술","해"];
+const BRANCH_INFO = {
+  "자": {element:"수", animal:"쥐"},
+  "축": {element:"토", animal:"소"},
+  "인": {element:"목", animal:"호랑이"},
+  "묘": {element:"목", animal:"토끼"},
+  "진": {element:"토", animal:"용"},
+  "사": {element:"화", animal:"뱀"},
+  "오": {element:"화", animal:"말"},
+  "미": {element:"토", animal:"양"},
+  "신": {element:"금", animal:"원숭이"},
+  "유": {element:"금", animal:"닭"},
+  "술": {element:"토", animal:"개"},
+  "해": {element:"수", animal:"돼지"}
+};
 
 const STEM_WITH_ELEMENT = {
   "갑": "갑목",
@@ -225,10 +239,11 @@ function calculate(){
   let ilji=BRANCHES[branchIndex-1];
   let ilju=ilgan+ilji;
   let ilganWithElement = STEM_WITH_ELEMENT[ilgan];
-
-  document.getElementById("ilganWithElement").innerText = ilganWithElement;
+  let branchInfo = BRANCH_INFO[ilji];
   document.getElementById("ilju").innerText = ilju + " 일주 입니다";
-
+  document.getElementById("ilganText").innerText = ilganWithElement + " 일간";
+  document.getElementById("iljiInfo").innerText =
+    ilji + branchInfo.element + " 일지 (나의 동물: " + branchInfo.animal + ")";
   document.getElementById("inputScreen").style.display="none";
   document.getElementById("resultScreen").style.display="flex";
 }
